@@ -1,5 +1,6 @@
 package com.udacity.asteroidradar.main
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squareup.picasso.Downloader
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.AsteroidRepository
 import com.udacity.asteroidradar.api.AsteroidApi
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.database.getDatabase
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Call
@@ -16,8 +19,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.await
 
-
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : ViewModel() {
 
     private val _status = MutableLiveData<String>()
     val status: LiveData<String>
@@ -27,10 +29,10 @@ class MainViewModel : ViewModel() {
     val imageOfTheDay: LiveData<String>
         get() = _imageOfTheDay
 
-    private val _asteroids = MutableLiveData<List<Asteroid>>()
+    /*private val _asteroids = MutableLiveData<List<Asteroid>>()
     val asteroid: LiveData<List<Asteroid>>
         get() = _asteroids
-
+*/
     private val _navigateToDetailFragment = MutableLiveData<Asteroid>()
     val navigateToDetailFragment: LiveData<Asteroid>
         get() = _navigateToDetailFragment
@@ -44,23 +46,20 @@ class MainViewModel : ViewModel() {
         _navigateToDetailFragment.value = asteroid
     }
 
-
+    private val database = getDatabase(application)
+    private val asteroidsRepository = AsteroidRepository(database)
 
     init {
-        getAsteroidsList()
+        refreshAsteroid()
     }
 
 
-    private fun getAsteroidsList() {
+    private fun refreshAsteroid() {
         viewModelScope.launch {
-            try {
-                val result = AsteroidApi.retrofitService.getAsteroids().await()
-                _asteroids.value = parseAsteroidsJsonResult(JSONObject(result))
-            } catch (e: Exception) {
-                _status.value = "Failure: ${e.message}"
-            }
+            asteroidsRepository.refreshAsteroids()
         }
     }
+    val asteroid = asteroidsRepository.asteroid
 
     private fun getImageOfTheDay() {
 
