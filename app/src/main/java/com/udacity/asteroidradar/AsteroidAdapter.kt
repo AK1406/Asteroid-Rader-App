@@ -1,5 +1,6 @@
 package com.udacity.asteroidradar
 
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.udacity.asteroidradar.databinding.AsteroidsItemListBinding
 
 
-class AsteroidAdapter() :
+class AsteroidAdapter(private val onClickListener: DialogInterface.OnClickListener) :
     ListAdapter<Asteroid, AsteroidAdapter.AsteroidViewHolder>(DiffCallback) {
 
 
@@ -40,4 +41,7 @@ class AsteroidAdapter() :
         }
     }
 
+    class OnClickListener(val clickListenter: (asteroid:Asteroid) -> Unit){
+        fun onClick(asteroid: Asteroid) = clickListenter(asteroid)
+    }
 }

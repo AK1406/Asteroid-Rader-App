@@ -31,6 +31,21 @@ class MainViewModel : ViewModel() {
     val asteroid: LiveData<List<Asteroid>>
         get() = _asteroids
 
+    private val _navigateToDetailFragment = MutableLiveData<Asteroid>()
+    val navigateToDetailFragment: LiveData<Asteroid>
+        get() = _navigateToDetailFragment
+
+
+    fun shownAsteroidDetail() {
+        _navigateToDetailFragment.value = null
+    }
+
+    fun displayAsteroidDetails(asteroid: Asteroid) {
+        _navigateToDetailFragment.value = asteroid
+    }
+
+
+
     init {
         getAsteroidsList()
     }
