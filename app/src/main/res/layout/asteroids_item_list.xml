@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+        <variable
+            name="asteroid"
+            type="com.udacity.asteroidradar.Asteroid" />
+    </data>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimaryDark"
+    android:layout_margin="8sp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3.5"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/asteroid_codeName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="#fff"
+                tools:text="(23456)"
+                android:text="@{asteroid.codename}"
+                tools:ignore="NestedWeights" />
+
+            <TextView
+                android:id="@+id/asteroid_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="#fff"
+                android:text="@{asteroid.closeApproachDate}"
+                tools:text="2020-11-10"
+                android:textSize="20dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/asteroid_status"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            app:statusIcon="@{asteroid.potentiallyHazardous}"
+            tools:srcCompat="@drawable/ic_status_potentially_hazardous"
+            android:contentDescription="status" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
