@@ -26,7 +26,7 @@ private val moshi = Moshi.Builder()
 
 
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(ScalarsConverterFactory.create())
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(Constants.BASE_URL)
     .build()
@@ -41,7 +41,7 @@ interface AsteroidApiService {
 
     @GET("@GET(planetary/apod?$API_KEY)")
     fun getPictureOfTheDay(/*@Query("api_key") apiKey: String = Constants.API_KEY*/):
-            Callback<String>
+            Deferred<PictureOfDay>
 
 }
 

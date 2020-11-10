@@ -11,14 +11,22 @@ import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
-
+/*
     private val viewModel: MainViewModel by lazy {
 
        val application =requireNotNull(this.activity).application
         val viewModelFactory = ViewModelFactory(application)
         ViewModelProvider(this,viewModelFactory)
             .get(MainViewModel::class.java)
+    }*/
+
+    private val viewModel: MainViewModel by lazy {
+        val activity = requireNotNull(this.activity) {}
+        val viewModelFactory = ViewModelFactory(activity.application)
+        ViewModelProvider(this,viewModelFactory)
+            .get(MainViewModel::class.java)
     }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

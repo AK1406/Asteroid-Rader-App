@@ -2,10 +2,7 @@ package com.udacity.asteroidradar.main
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.squareup.picasso.Downloader
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.AsteroidRepository
@@ -24,10 +21,12 @@ class MainViewModel(application: Application) : ViewModel() {
     private val _status = MutableLiveData<String>()
     val status: LiveData<String>
         get() = _status
+/*
 
     private val _imageOfTheDay = MutableLiveData<String>()
     val imageOfTheDay: LiveData<String>
         get() = _imageOfTheDay
+*/
 
     /*private val _asteroids = MutableLiveData<List<Asteroid>>()
     val asteroid: LiveData<List<Asteroid>>
@@ -49,8 +48,14 @@ class MainViewModel(application: Application) : ViewModel() {
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidRepository(database)
 
+    val asteroid = asteroidsRepository.asteroid
+    val imageOfTheDay = asteroidsRepository.pictureOfDay
+
     init {
-        refreshAsteroid()
+        viewModelScope.launch {
+            refreshAsteroid()
+            refreshPicture()
+        }
     }
 
 
@@ -59,26 +64,14 @@ class MainViewModel(application: Application) : ViewModel() {
             asteroidsRepository.refreshAsteroids()
         }
     }
-    val asteroid = asteroidsRepository.asteroid
 
-    private fun getImageOfTheDay() {
-
+    private fun refreshPicture() {
         viewModelScope.launch {
-
-            AsteroidApi.retrofitService.getPictureOfTheDay().enqueue(object : Callback<String> {
-
-                override fun onResponse(call: Call<String>, response: Downloader.Response<String>) {
-                    Log.i("Mylog ", "Success Image")
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.i("Mylog Failed Image:", t.message.toString())
-                }
-
-            })
-
+            asteroidsRepository.refreshPicture()
         }
     }
+
+
 }
 
 

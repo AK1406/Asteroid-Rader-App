@@ -12,15 +12,21 @@ interface AsteroidDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg asteroid: DatabaseAsteroid)
+
+    @Query("DELETE FROM databaseasteroid")
+    fun clear()
 }
 
 @Dao
 interface PictureDao {
     @Query("SELECT * FROM databasePicture")
-    fun getPicture(): LiveData<DatabasePicture>
+    fun getPicture(): DatabasePicture
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg picture: DatabasePicture)
+
+    @Query("DELETE FROM databasePicture")
+    fun clear()
 
 }
 
