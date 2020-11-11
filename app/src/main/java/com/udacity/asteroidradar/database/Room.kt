@@ -7,20 +7,26 @@ import androidx.room.*
 
 @Dao
 interface AsteroidDao {
-    @Query("select * from databaseAsteroid")
+    @Query("SELECT * FROM databaseAsteroid ORDER BY date(closeApproachDate) ")
     fun getAsteroid(): LiveData<List<DatabaseAsteroid>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg asteroid: DatabaseAsteroid)
 
-    @Query("DELETE FROM databaseasteroid")
-    fun clear()
+    @Query("SELECT * FROM databaseAsteroid where strftime('%Y-%m-%d',closeApproachDate) >= strftime('%Y-%m-%d','now') ORDER BY date(closeApproachDate) ")
+    fun getWeekAsteroids(): LiveData<List<DatabaseAsteroid>>
+
+    @Query("SELECT * FROM databaseAsteroid where strftime('%Y-%m-%d',closeApproachDate) = strftime('%Y-%m-%d','now')")
+    fun getTodayAsteroids(): LiveData<List<DatabaseAsteroid>>
+
+    @Query("DELETE FROM databaseAsteroid WHERE closeApproachDate < strftime('%s', datetime('now'))")
+    fun delOldAsteroids()
 }
 
 @Dao
 interface PictureDao {
     @Query("SELECT * FROM databasePicture")
-    fun getPicture(): DatabasePicture
+    fun getPicture(): LiveData<DatabasePicture>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg picture: DatabasePicture)
@@ -31,10 +37,9 @@ interface PictureDao {
 }
 
 
-@Database(entities = [DatabaseAsteroid::class,DatabasePicture::class], version =1)
+@Database(entities = [DatabaseAsteroid::class, DatabasePicture::class], version = 1)
 abstract class AsteroidDatabase : RoomDatabase() {
     abstract val asteroidDao: AsteroidDao
-
     abstract val pictureDao: PictureDao
 }
 
@@ -46,9 +51,9 @@ fun getDatabase(context: Context): AsteroidDatabase {
     synchronized(AsteroidDatabase::class.java) {
         if (!::INSTANCE.isInitialized) {
             INSTANCE = Room.databaseBuilder(
-                context.applicationContext,
-                AsteroidDatabase::class.java,
-                "asteroids"
+                    context.applicationContext,
+                    AsteroidDatabase::class.java,
+                    "asteroids"
             ).build()
         }
     }

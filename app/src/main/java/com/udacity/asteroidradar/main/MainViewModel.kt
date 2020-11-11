@@ -18,23 +18,22 @@ import retrofit2.await
 
 class MainViewModel(application: Application) : ViewModel() {
 
-    private val _status = MutableLiveData<String>()
-    val status: LiveData<String>
-        get() = _status
-/*
-
-    private val _imageOfTheDay = MutableLiveData<String>()
-    val imageOfTheDay: LiveData<String>
-        get() = _imageOfTheDay
-*/
-
-    /*private val _asteroids = MutableLiveData<List<Asteroid>>()
-    val asteroid: LiveData<List<Asteroid>>
-        get() = _asteroids
-*/
     private val _navigateToDetailFragment = MutableLiveData<Asteroid>()
     val navigateToDetailFragment: LiveData<Asteroid>
         get() = _navigateToDetailFragment
+
+    private val database = getDatabase(application)
+    private val asteroidsRepository = AsteroidRepository(database)
+
+    init {
+        viewModelScope.launch {
+            asteroidsRepository.refreshAsteroids()
+        }
+    }
+
+    val asteroid = asteroidsRepository.asteroid
+    val imageOfTheDay = asteroidsRepository.pictureOfDay
+    val loadingStatus = asteroidsRepository.progressBar
 
 
     fun shownAsteroidDetail() {
@@ -45,30 +44,8 @@ class MainViewModel(application: Application) : ViewModel() {
         _navigateToDetailFragment.value = asteroid
     }
 
-    private val database = getDatabase(application)
-    private val asteroidsRepository = AsteroidRepository(database)
-
-    val asteroid = asteroidsRepository.asteroid
-    val imageOfTheDay = asteroidsRepository.pictureOfDay
-
-    init {
-        viewModelScope.launch {
-            refreshAsteroid()
-            refreshPicture()
-        }
-    }
-
-
-    private fun refreshAsteroid() {
-        viewModelScope.launch {
-            asteroidsRepository.refreshAsteroids()
-        }
-    }
-
-    private fun refreshPicture() {
-        viewModelScope.launch {
-            asteroidsRepository.refreshPicture()
-        }
+    fun onFilterSelect(filter: AsteroidRepository.Type) {
+        asteroidsRepository.applyFilter(filter)
     }
 
 

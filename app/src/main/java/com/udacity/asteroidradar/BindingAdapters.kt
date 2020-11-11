@@ -8,17 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
 
-
-
 @BindingAdapter("imageSrcUrl")
 fun bindImage(imgView: ImageView, imgUrl: String?) {
     imgUrl?.let {
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
         Picasso.with(imgView.context)
-            .load(imgUri)
-            .placeholder(R.drawable.placeholder_picture_of_day)
-            .error(R.drawable.placeholder_picture_of_day)
-            .into(imgView)
+                .load(imgUri)
+                .placeholder(R.drawable.placeholder_picture_of_day)
+                .error(R.drawable.placeholder_picture_of_day)
+                .into(imgView)
     }
 }
 
@@ -33,8 +31,10 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?) {
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
     if (isHazardous) {
         imageView.setImageResource(R.drawable.ic_status_potentially_hazardous)
+        imageView.contentDescription = imageView.context.getString(R.string.hazardous_icon)
     } else {
         imageView.setImageResource(R.drawable.ic_status_normal)
+        imageView.contentDescription = imageView.context.getString(R.string.not_hazardous_icon)
     }
 }
 
@@ -42,8 +42,10 @@ fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
 fun bindDetailsStatusImage(imageView: ImageView, isHazardous: Boolean) {
     if (isHazardous) {
         imageView.setImageResource(R.drawable.asteroid_hazardous)
+        imageView.contentDescription = imageView.context.getString(R.string.hazardous_asteroid_image)
     } else {
         imageView.setImageResource(R.drawable.asteroid_safe)
+        imageView.contentDescription = imageView.context.getString(R.string.not_hazardous_asteroid_image)
     }
 }
 

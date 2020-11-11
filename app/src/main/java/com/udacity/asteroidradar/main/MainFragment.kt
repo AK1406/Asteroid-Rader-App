@@ -7,24 +7,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.udacity.asteroidradar.AsteroidAdapter
+import com.udacity.asteroidradar.AsteroidRepository
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
-/*
+
     private val viewModel: MainViewModel by lazy {
 
-       val application =requireNotNull(this.activity).application
+        val application = requireNotNull(this.activity).application
         val viewModelFactory = ViewModelFactory(application)
-        ViewModelProvider(this,viewModelFactory)
-            .get(MainViewModel::class.java)
-    }*/
-
-    private val viewModel: MainViewModel by lazy {
-        val activity = requireNotNull(this.activity) {}
-        val viewModelFactory = ViewModelFactory(activity.application)
-        ViewModelProvider(this,viewModelFactory)
-            .get(MainViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)
+                .get(MainViewModel::class.java)
     }
 
 
@@ -38,18 +32,25 @@ class MainFragment : Fragment() {
         setHasOptionsMenu(true)
 
         viewModel.navigateToDetailFragment.observe(viewLifecycleOwner, Observer {
-            if(it != null){
+            if (it != null) {
                 this.findNavController().navigate(MainFragmentDirections.actionShowDetail(it))
                 viewModel.shownAsteroidDetail()
             }
         })
 
         binding.asteroidRecycler.adapter = AsteroidAdapter(
-            AsteroidAdapter.OnClickListener{
-            viewModel.displayAsteroidDetails(it)
-        }
+                AsteroidAdapter.OnClickListener {
+                    viewModel.displayAsteroidDetails(it)
+                }
         )
 
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                binding.statusLoadingWheel.visibility = View.VISIBLE
+            } else {
+                binding.statusLoadingWheel.visibility = View.GONE
+            }
+        })
         return binding.root
     }
 
@@ -59,6 +60,11 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.show_all_menu -> viewModel.onFilterSelect(AsteroidRepository.Type.SAVED)
+            R.id.show_today_menu -> viewModel.onFilterSelect(AsteroidRepository.Type.TODAY)
+            R.id.show_week_menu -> viewModel.onFilterSelect(AsteroidRepository.Type.WEEK)
+        }
         return true
     }
 }
