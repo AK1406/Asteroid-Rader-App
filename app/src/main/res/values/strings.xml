@@ -22,4 +22,6 @@
     <string name="this_is_nasa_s_picture_of_day_showing_nothing_yet">This is NASA\'s picture of day, showing nothing yet</string>
     <string name="nasa_picture_of_day_content_description_format">NASA\'s picture of day: %s</string>
     <string name="question_mark_to_know_more">Tab to know more</string>
+    <string name="asteroid_status_icon">asteroid status icon</string>
+    <string name="asteroid_image">Asteroid image</string>
 </resources>
